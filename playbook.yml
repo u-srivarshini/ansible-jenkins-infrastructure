@@ -1,0 +1,21 @@
+---
+- name: Provision Nginx Web Server
+  hosts: local
+  connection: local
+  become: false
+
+  tasks:
+
+    - name: Create Nginx container
+      community.docker.docker_container:
+        name: ansible-nginx
+        image: nginx:latest
+        state: started
+        ports:
+          - "8082:80"
+
+    - name: Copy website to Nginx container
+      community.docker.docker_container_copy_into:
+        container: ansible-nginx
+        path: ./index.html
+        container_path: /usr/share/nginx/html/index.html
